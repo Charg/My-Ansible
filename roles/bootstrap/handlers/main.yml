@@ -1,0 +1,13 @@
+---
+# handlers file for bootstrap
+- name: restart sshd
+  service:
+    name: sshd
+    state: restarted
+    enabled: yes
+
+- name: start sshd
+  service:
+    name: sshd
+    state: started
+    enabled: yes

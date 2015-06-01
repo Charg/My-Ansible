@@ -1,0 +1,12 @@
+---
+# defaults file for bitsnpieces
+dropbox_dir: /media/Dropbox
+
+# AutoStart
+work_autostart:
+  - pidgin.desktop
+  - dropbox.desktop
+  - hipchat.desktop
+
+my_autostart:
+  - dropbox.desktop

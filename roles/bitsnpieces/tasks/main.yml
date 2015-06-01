@@ -1,0 +1,92 @@
+---
+##
+## DotFiles
+##
+- name: Get DotFiles
+  git:
+    repo: "https://github.com/Charg/dotfiles.git"
+    dest: "/home/{{ user_name }}/git/dotfiles"
+    track_submodules: "yes"
+  sudo_user: "{{ user_name }}"
+  tags: [ 'bitsnpieces', 'bitsnpieces-dot' ]
+
+- name: Install DotFiles
+  command: /home/{{ user_name }}/git/dotfiles/flyhome.sh
+  sudo_user: "{{ user_name }}"
+  tags: [ 'bitsnpieces', 'bitsnpieces-dot', 'bitsnpieces-dot-install' ]
+
+##
+## Dropbox
+## https://www.dropbox.com/install?os=lnx
+## 
+
+## Setup folder structure
+
+- name: Symlink {{ dropbox_dir }} to ~/Dropbox 
+  file: |
+    path={{ dropbox_dir }}
+    src=/home/{{ user_name }}/Dropbox
+    state=link
+    force=yes
+  sudo_user: "{{ user_name }}"
+  tags: [ 'bitsnpieces', 'bitsnpieces-dropbox' ]
+  
+- name: Download and Install Dropbox
+  script: /usr/bin/curl -L "https://www.dropbox.com/download?plat=lnx.{{ ansible_architecture }}" | tar -C $HOME -xzf - creates=/home/{{ user_name }}/.dropbox-dist/dropboxd
+  sudo_user: "{{ user_name }}"
+  tags: [ 'bitsnpieces', 'bitsnpieces-dropbox' ]
+
+- name: Download and Install Dropbox Control
+  get_url:
+    dest: "/usr/local/bin/dropbox-cli"
+    url: "https://www.dropbox.com/download?dl=packages/dropbox.py"
+    mode: 0755
+  tags: [ 'bitsnpieces', 'bitsnpieces-dropbox' ]
+
+##
+## Synergy
+##
+#- name: Synergy Configuration
+#  template:
+#  when: syn_server|default(false)
+
+##
+## GNOME3 Settings
+##
+- name: Setup GNOME3
+  script: my_gnome3.sh
+  sudo_user: "{{ user_name }}"
+  when: gui|default(false)
+  tags: [ 'bitsnpieces', 'bitsnpieces-gnome', 'bitsnpieces-gnome-terminal' ]
+
+# GNOME Autostarts
+- name: Add Autostart Applications
+  copy:
+    src: Autostart/{{ item }}
+    dest: /home/{{ user_name }}/.config/autostart/
+  with_items: my_autostart
+  sudo_user: "{{ user_name }}"
+  when: gui|default(false) and not work|default(false)
+  tags: [ 'bitsnpieces', 'bitsnpieces-gnome', 'bitsnpieces-gnome-autostart' ]
+
+- name: Add Work Autostart Applications
+  copy:
+    src: Autostart/{{ item }}
+    dest: /home/{{ user_name }}/.config/autostart/
+  with_items: work_autostart
+  sudo_user: "{{ user_name }}"
+  when: gui|default(false) and work|default(false)
+  tags: [ 'bitsnpieces', 'bitsnpieces-gnome', 'bitsnpieces-gnome-autostart' ]
+
+
+##
+## Scripts
+##
+- name: Copy Scripts
+  copy: |
+    src=Scripts/
+    dest=/home/{{ user_name }}/Scripts/
+    group={{ user_name }}
+    owner={{ user_name }}
+  sudo_user: "{{ user_name }}"
+  tags: [ 'bitsnpieces', 'bitsnpieces-scripts' ]

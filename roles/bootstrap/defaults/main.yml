@@ -1,0 +1,45 @@
+---
+# Repo Information
+# Adobe
+adobe_repo: http://linuxdownload.adobe.com/adobe-release/adobe-release-x86_64-1.0-1.noarch.rpm
+
+# Default packages I install
+packages: 
+  - htop
+  - git
+  - zsh
+  - vim
+  - tmux
+  - nmap
+
+# GUI Packages. Packages I like to have on machines that have a GUI
+gui_packages:
+  - firefox
+  - flash-plugin
+  - synergy
+  - freerdp
+  - VirtualBox-4.3
+  - pidgin
+  - pidgin-sipe
+  - pidgin-otr
+  - wine
+  - hipchat
+  - vagrant
+  - https://github.com/atom/atom/releases/download/v0.194.0/atom.x86_64.rpm
+
+# Work Packages
+work_packages:
+  - sshpass 
+  - ansible
+
+# Custom Packages. This allow packages to be added outside of the role
+cust_packages: False
+
+##
+## User Defaults
+##
+
+user_name: 'gibson'
+user_pass: '$6$V5oK6yizr6$vtnTzYZP7y5cqM0duxqtkxXK0bftmLX6J3W9R6gk/7lmrJpZPcpQw5.cMUBHyi.iEGPLSNx7ZuMznhYF8o1v20'
+user_shell: '/bin/zsh'
+user_groups: "wheel" 

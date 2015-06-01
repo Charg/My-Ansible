@@ -1,0 +1,9 @@
+localhost ansible_connection=local
+
+[my_machines:children]
+desktops
+servers
+
+[desktops]
+
+[servers]

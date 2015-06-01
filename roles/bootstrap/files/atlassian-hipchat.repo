@@ -1,0 +1,6 @@
+[atlassian-hipchat]
+name=Atlassian Hipchat
+baseurl=http://downloads.hipchat.com/linux/yum
+enabled=1
+gpgcheck=1
+gpgkey=https://www.hipchat.com/keys/hipchat-linux.key

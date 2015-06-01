@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=hipchat
+Hidden=false
+X-GNOME-Autostart-Enabled=true
+Name=Hipchat
+Comment=Hipchat Chat Ops

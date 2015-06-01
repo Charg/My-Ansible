@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=pidgin
+Hidden=false
+X-GNOME-Autostart-Enabled=true
+Name=Pidgin
+Comment=Pidgin Chat

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=dropbox-cli start
+Hidden=false
+X-GNOME-Autostart-Enabled=true
+Name=dropbox
+Comment=Dropbox

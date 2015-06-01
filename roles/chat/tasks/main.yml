@@ -1,0 +1,5 @@
+---
+# tasks file for chat
+- name: Install IRSSI
+  yum: name=irssi state=present
+  tags: [ 'chat', 'irssi' ]

@@ -1,0 +1,6 @@
+- hosts: localhost
+  sudo: yes
+  roles:
+      - { role: bootstrap }
+      - { role: chat }
+      - { role: bitsnpieces }

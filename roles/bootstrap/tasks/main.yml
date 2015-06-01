@@ -1,0 +1,119 @@
+---
+# tasks file for bootstrap
+## DEBUG
+- name: Debug User_Name
+  debug: var=user_name
+
+- name: Debug Password
+  debug: var=user_pass
+
+##
+## Hostname
+##
+- name: Setting Your Hostname
+  hostname:
+    name: "{{ hostname }}"
+  tags: [ 'bootstrap', 'bootstrap-hostname' ]
+
+##
+## Install Repos
+##
+
+# Virtualbox
+- name: Virtualbox Repository
+  copy:
+    src: vbox.repo
+    dest: /etc/yum.repos.d/
+    mode: 0644
+    owner: root
+    group: root
+  when: gui|default(false)
+  tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-vbox' ]
+
+- name: Import Virtualbox Key
+  rpm_key:
+    key: https://www.virtualbox.org/download/oracle_vbox.asc
+    state: present
+  when: gui|default(false)
+  tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-vbox' ]
+
+# Adobe Flash
+- name: Adobe Flash Repository
+  yum: name={{ adobe_repo }} state=present
+  when: gui|default(false)
+  tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-adobe' ]
+
+- name: Import Adobe Flash Key
+  rpm_key:
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-adobe-linux
+    state: present
+  when: gui|default(false)
+  tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-vbox' ]
+
+# HipChat
+- name: Hipchat Repository
+  copy:
+    src: atlassian-hipchat.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: 0644
+  when: gui|default(false)
+  tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-hipchat' ]
+
+##
+## Install Packages
+##
+
+- name: Update All Packages
+  yum: name=* state=latest
+  tags: [ 'bootstrap', 'bootstrap-packages', 'bootstrap-packages-update' ]
+
+- name: My Packages
+  yum: name="{{ item }}" state=latest
+  with_items: packages
+  tags: [ 'bootstrap', 'bootstrap-packages', 'bootstrap-packages-mine' ]
+
+- name: GUI Packages
+  yum: name="{{ item }}" state=latest
+  when: gui|default(false)
+  with_items: gui_packages
+  tags: [ 'bootstrap', 'bootstrap-packages', 'bootstrap-packages-gui' ]
+
+# This allows packages to be defined outside of the role
+- name: Custom Packages
+  yum: name="{{ item }}" state=latest
+  with_items: cust_packages
+  when: cust_packages|default(false)
+  tags: [ 'bootstrap', 'bootstrap-packages' ]
+
+##
+## Make A User
+##
+- name: Create User Account
+  user:
+    name: "{{ user_name }}"
+    password: "{{ user_pass }}"
+    shell: "{{ user_shell }}"
+    groups: "{{ user_groups }}"
+    append: "yes"
+    comment: "Created by ansible"
+  tags: [ 'bootstrap', 'bootstrap-user' ]
+
+##
+## Common Configuration Files
+##
+- name: SSHD Configuration
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    mode: 0600
+    owner: root
+    group: root
+  notify:
+    - restart sshd
+  tags: [ 'bootstrap', 'bootstrap-config', 'bootstrap-config-sshd' ]
+
+##
+## Firewall Stuff Here
+##
