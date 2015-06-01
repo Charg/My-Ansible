@@ -1,4 +1,4 @@
-localhost ansible_connection=local
+localhost ansible_connection=local ansible_python_interpreter=/media/Dropbox/Code/Python/.venv/my-ansible/bin/python
 
 [my_machines:children]
 desktops
