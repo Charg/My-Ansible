@@ -1,0 +1,1 @@
+inventory/host_vars/localhost filter=git-crypt diff=git-crypt
