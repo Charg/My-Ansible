@@ -1,8 +1,6 @@
 ---
 - hosts: localhost
-  connection: local
   gather_facts: False
   roles:
-    - {role: rax-cloud, when: rax_provision | default(False)}
-    - {role: digi-cloud, when: digi_provision | default(False)}
-    #- {role: rax-cloud, when: rax_delete|default(False)}
+    - { role: rax-cloud } 
+    - { role: digi-cloud }
