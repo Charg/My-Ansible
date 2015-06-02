@@ -10,8 +10,8 @@
       region: "{{ rax_instance_region }}"
       key_name: "{{ rax_instance_key }}"
       auto_increment: "{{ 'Yes' if rax_instance_count|default(1) > 1 else 'No' }}"
-      group: "{{ rax_instance_group | default('DEFAULT') }}"
-      count: "{{ rax_instance_count | default(1) }}"
+      group: "{{ rax_instance_group }}"
+      count: "{{ rax_instance_count }}"
       user_data: "{{ rax_instance_user_data | default(False) }}"
       state: present
       wait: yes

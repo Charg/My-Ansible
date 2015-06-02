@@ -1,0 +1,19 @@
+---
+# defaults file for rax-cloud
+rax: 'false'
+rax_instance_flavor: 'general1-1'
+rax_instance_region: 'IAD'
+rax_instance_group: 'DEFAULT'
+rax_instance_count: 1
+
+
+# CoreOS Config
+#rax_core: True
+#rax_instance_count: 1
+#rax_instance_name: 'TheCore'
+#rax_instance_image: 'CoreOS (Stable)'
+#rax_instance_flavor: 'general1-1'
+#rax_instance_region: 'IAD'
+#rax_instance_config_drive: 'yes'
+## Cloud Config Location
+#rax_instance_user_data: /tmp/something.config
