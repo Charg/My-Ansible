@@ -1,0 +1,6 @@
+# Cloud Configuration
+rax_user: 'username'
+rax_api_key: '1234567...'
+rax_instance_image: 'Ubuntu'
+rax_instance_key: 'My_SSH_Key'
+rax_instance_name: 'c00lhost%03d.domain.com'
