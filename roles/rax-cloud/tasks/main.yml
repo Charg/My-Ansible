@@ -1,0 +1,12 @@
+---
+# tasks file for rax-cloud
+
+- include: provision.yml
+  when: rax_provision|default(False)
+
+- include: dns.yml
+  when: rax_provision|default(False)
+
+- include: manage.yml
+  when: rax_manage|default(False)
+
