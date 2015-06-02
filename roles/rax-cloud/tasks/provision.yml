@@ -1,41 +1,5 @@
 ###
-- name: RAX | Provision instance
-  local_action:
-      module: rax
-      api_key: "{{ rax_api_key }}"
-      username: "{{ rax_user }}"
-      name: "{{ rax_instance_name }}"
-      flavor: "{{ rax_instance_flavor }}"
-      image: "{{ rax_instance_image }}"
-      count: "{{ rax_instance_count }}"
-      region: "{{ rax_instance_region }}"
-      key_name: "{{ rax_instance_key }}"
-      group: "{{ rax_instance_group }}"
-      exact_count: yes
-      state: present
-      wait: yes
-  register: rax
-  when: rax_server|default(False)
-
-- name: RAX | Provision multiple instances
-  local_action:
-      module: rax
-      api_key: "{{ rax_api_key }}"
-      username: "{{ rax_user }}"
-      name: "{{ rax_instance_name }}"
-      flavor: "{{ rax_instance_flavor }}"
-      image: "{{ rax_instance_image }}"
-      count: "{{ rax_instance_count }}"
-      region: "{{ rax_instance_region }}"
-      key_name: "{{ rax_instance_key }}"
-      group: "{{ rax_instance_group }}"
-      exact_count: yes
-      state: present
-      wait: yes
-  register: rax
-  when: rax_server_multi|default(False)
-
-- name: RAX | Provision CoreOS instance
+- name: Provision instance
   local_action:
       module: rax
       api_key: "{{ rax_api_key }}"
@@ -45,33 +9,16 @@
       image: "{{ rax_instance_image }}"
       region: "{{ rax_instance_region }}"
       key_name: "{{ rax_instance_key }}"
-      config_drive: "{{ rax_instance_config_drive }}"
-      user_data: "{{ rax_instance_user_data }}"
-      group: core
+      auto_increment: "{{ 'Yes' if rax_instance_count|default(1) > 1 else 'No' }}"
+      group: "{{ rax_instance_group | default('DEFAULT') }}"
+      count: "{{ rax_instance_count | default(1) }}"
+      user_data: "{{ rax_instance_user_data | default(False) }}"
       state: present
       wait: yes
   register: rax
-  when: rax_core|default(False)
+  tags: [ 'rax', 'rax_provision' ]
 
-- name: RAX | Provision multiple CoreOS instances
-  local_action:
-      module: rax
-      api_key: "{{ rax_api_key }}"
-      username: "{{ rax_user }}"
-      name: "{{ rax_instance_name }}"
-      flavor: "{{ rax_instance_flavor }}"
-      image: "{{ rax_instance_image }}"
-      count: "{{ rax_instance_count }}"
-      region: "{{ rax_instance_region }}"
-      key_name: "{{ rax_instance_key }}"
-      config_drive: "{{ rax_instance_config_drive }}"
-      user_data: "{{ rax_instance_user_data }}"
-      group: core
-      exact_count: yes
-      state: present
-      wait: yes
-  register: rax
-  when: rax_core_multi|default(False)
-
-- name: RAX | Return the registered variable
-  debug: msg={{ rax }}
+- name: Rax Server
+  debug: msg="{{ item.name }} @ {{ item.rax_accessipv4 }}"
+  with_items: rax.instances
+  tags: [ 'rax', 'rax_provision' ]
