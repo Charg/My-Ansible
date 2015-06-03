@@ -1,3 +1,4 @@
 inventory/host_vars/localhost filter=git-crypt diff=git-crypt
 inventory/host_vars/hyperion.argeros.org filter=git-crypt diff=git-crypt
 roles/chat/files/irssi/my_key.pem filter=git-crypt diff=git-crypt
+roles/chat/files/irssi/config filter=git-crypt diff=git-crypt
