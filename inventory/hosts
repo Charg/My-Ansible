@@ -7,3 +7,4 @@ servers
 [desktops]
 
 [servers]
+hyperion.argeros.org hostname=hyperion.argeros.org chat=True
