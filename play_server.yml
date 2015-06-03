@@ -1,0 +1,7 @@
+- hosts: servers
+  user: root
+  sudo: yes
+  roles:
+      - { role: bootstrap }
+      - { role: bitsnpieces }
+      - { role: chat, when: chat | default(False) }
