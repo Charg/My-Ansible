@@ -1,26 +1,10 @@
 ---
-# tasks file for bootstrap
-## DEBUG
-- name: Debug User_Name
-  debug: var=user_name
-
-- name: Debug Password
-  debug: var=user_pass
-
-##
-## Hostname
-##
 - name: Setting Your Hostname
   hostname:
     name: "{{ hostname }}"
   tags: [ 'bootstrap', 'bootstrap-hostname' ]
 
-##
-## Install Repos
-##
-
-# Virtualbox
-- name: Virtualbox Repository
+- name: Import Virtualbox Repository
   copy:
     src: vbox.repo
     dest: /etc/yum.repos.d/
@@ -38,7 +22,7 @@
   tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-vbox' ]
 
 # Adobe Flash
-- name: Adobe Flash Repository
+- name: Install Adobe Flash Repository
   yum: name={{ adobe_repo }} state=present
   when: gui|default(false)
   tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-adobe' ]
@@ -61,9 +45,12 @@
   when: gui|default(false)
   tags: [ 'bootstrap', 'bootstrap-repo', 'bootstrap-repo-hipchat' ]
 
-##
-## Install Packages
-##
+# Install Yum-Python Bindings
+# Some servers are missing them. Without it the yum module epic fails.
+- name: Install Yums Python Bindings
+  shell: yum install -y python-yumdaemon
+  when: server|default(false)
+  tags: [ 'bootstrap', 'bootstrap-packages', 'bootstrap-packages-update' ]
 
 - name: Update All Packages
   yum: name=* state=latest
