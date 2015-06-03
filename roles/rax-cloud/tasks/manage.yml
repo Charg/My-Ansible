@@ -1,0 +1,18 @@
+###
+
+- name: RAX | Delete an instance
+  local_action:
+      module: rax
+      api_key: "{{ rax_api_key }}"
+      username: "{{ rax_user }}"
+      name: "{{ rax_instance_name }}"
+      flavor: "{{ rax_instance_flavor }}"
+      image: "{{ rax_instance_image }}"
+      region: "{{ rax_instance_region }}"
+      state: absent
+      wait: yes
+  when: rax_delete == 'true'
+  register: rax
+
+- name: RAX | Return the registered variable
+  debug: msg={{ rax }}
