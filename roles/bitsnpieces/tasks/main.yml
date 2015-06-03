@@ -7,6 +7,7 @@
     repo: "https://github.com/Charg/dotfiles.git"
     dest: "/home/{{ user_name }}/git/dotfiles"
     track_submodules: "yes"
+    force: Yes
   sudo_user: "{{ user_name }}"
   tags: [ 'bitsnpieces', 'bitsnpieces-dot' ]
 
@@ -28,7 +29,7 @@
     src=/home/{{ user_name }}/Dropbox
     state=link
     force=yes
-  sudo_user: "{{ user_name }}"
+  sudo: yes
   tags: [ 'bitsnpieces', 'bitsnpieces-dropbox' ]
   
 - name: Download and Install Dropbox
