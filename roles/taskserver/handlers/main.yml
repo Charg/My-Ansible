@@ -1,0 +1,16 @@
+---
+# handlers file for taskserver
+- name: start taskd
+  service:
+    name: taskd
+    enabled: yes
+    state: started
+  sudo: yes
+
+- name: restart taskd
+  service:
+    name: taskd
+    enabled: yes
+    state: restarted
+  sudo: yes
+

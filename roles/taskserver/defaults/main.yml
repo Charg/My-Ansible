@@ -1,0 +1,19 @@
+---
+# defaults file for taskserver
+task_user: 'taskd'
+task_data: '/var/lib/taskd'
+task_exe: '/usr/bin/taskd'
+task_port: '666'
+task_family: 'IPv4'
+task_log: '{{ task_data }}/taskd.log'
+task_pid: '{{ task_data }}/taskd.pid'
+task_users:
+  - name: "Test User"
+    org: "Default"
+ca_bin: '/usr/bin/certtool'
+ca_org: 'Not The FBI'
+ca_cn: '{{ ansible_hostname }}'
+ca_country: 'US'
+ca_state: 'CA'
+ca_exp: '365'
+ca_bits: '4096'

@@ -1,0 +1,118 @@
+---
+# tasks file for taskserver
+
+- name: Install TaskWarrior Server
+  yum:
+    name: taskd
+    state: latest
+  sudo: yes
+  tags: [ 'tw', 'tw-install' ]
+
+#- name: Create TaskWarrior Server User
+#  user:
+#    name: "{{ task_user }}"
+#    password: "{{ lookup('password', '/tmp/taskpw length=24') }}"
+#    system: yes
+#    state: present
+#  tags: [ 'tw', 'tw-user', 'tw-prep' ]
+#  sudo: yes
+
+#- name: Create TaskWarrior Server Directory
+#  file:
+#    path: "{{ task_data }}"
+#    state: directory
+#    owner: "{{ task_user }}"
+#    group: "{{ task_user }}"
+#    mode: 0700
+#  tags: [ 'tw', 'tw-data', 'tw-prep' ]
+#  sudo: yes
+
+#- name: Copy TaskWarrior CA Scripts
+#  copy:
+#    src: "pki"
+#    dest: "{{ task_data }}/"
+#    directory_mode: "yes"
+#    mode: 0700
+#    owner: "{{ task_user }}"
+#    group: "{{ task_user }}"
+#  when: tw_self_sign|default(False)
+#  tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
+#  sudo: yes
+
+#- name: Copy TaskWarrior CA Scripts
+#  copy:
+#    src: "pki"
+#    dest: "{{ task_data }}"
+#    directory_mode: 'yes'
+#    mode: 0700
+#    owner: "{{ task_user }}"
+#    group: "{{ task_user }}"
+#  when: tw_self_sign|default(False)
+#  tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
+#  sudo: yes
+#  sudo_user: "{{ task_user }}"
+
+- name: Copy Self Signed CA Vars
+  template:
+    src: "vars.j2"
+    dest: "/etc/pki/taskd/vars"
+    mode: 0600
+    owner: "{{ task_user }}"
+    group: "{{ task_user }}"
+  when: tw_self_sign|default(False)
+  sudo: yes
+  tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
+
+- name: Generate Self Signed CA
+  shell: "/etc/pki/taskd/generate chdir=/etc/pki/taskd creates=/etc/pki/taskd/client.cert.pem"
+  when: tw_self_sign|default(False)
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
+
+- name: Configure TaskWarrior Server
+  command: "{{ item }}"
+  with_items:
+    - "{{ task_exe }} config --data {{ task_data }} --force server {{ ansible_hostname }}:{{ task_port }}"
+    - "{{ task_exe }} config --data {{ task_data }} --force family {{ task_family }}"
+  notify:
+    - restart taskd
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-config' ]
+
+- name: Configure TaskWarrior Orgs
+  command: "{{ task_exe }} add --data {{ task_data }} org {{ item.org }}"
+  with_items: "{{ task_users }}"
+  notify:
+    - restart taskd
+  register: taskd_org_out
+  failed_when: "'Failed' in taskd_org_out.stderr"
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-user', 'tw-org' ]
+
+- name: Configure TaskWarrior Users
+  command: "{{ task_exe }} add --data {{ task_data }}  user '{{ item.org }}' '{{ item.name }}'"
+  with_items: "{{ task_users }}"
+  notify:
+    - restart taskd
+  register: taskd_user_out
+  failed_when: "'Failed' in taskd_user_out.stderr"
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-user' ]
+
+- name: Copy User Information
+  template:
+    src: user.info.j2
+    dest: ~/user.info
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+
+- name: Configure TaskWarrior Users Certificates
+  shell: "/etc/pki/taskd/generate.client {{ item.name|regex_replace(' ', '_') }} chdir=/etc/pki/taskd creates=/etc/pki/taskd/{{ item.name|regex_replace(' ', '_') }}.cert.pem"
+  with_items: "{{ task_users }}"
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-user' ]

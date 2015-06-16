@@ -1,0 +1,16 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure(2) do |config|
+
+  config.vm.box = "chef/fedora-21"
+  config.vm.network "forwarded_port", guest: 51666, host: 51666
+
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = "test.yml"
+    ansible.verbose = ENV['ANSIBLE_VERBOSE'] ||= "v"
+    ansible.tags = ENV['ANSIBLE_TAGS'] ||= "all"
+    ansible.extra_vars = { tw_self_sign: 'True' }
+  end
+
+end
