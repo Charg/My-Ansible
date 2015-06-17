@@ -1,0 +1,20 @@
+---
+- name: Enable Services
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items: "{{ firewall_services|default(false) }}"
+  when: firewall_services|default(false)
+  sudo: yes
+  tags: [ 'firewalld', 'firewalld-service' ]
+
+- name: Enable Ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items: "{{ firewall_ports|default(false) }}"
+  when: firewall_ports|default(false)
+  sudo: yes
+  tags: [ 'firewalld', 'firewalld-ports' ]
