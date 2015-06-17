@@ -59,13 +59,12 @@
     mode: 0600
     owner: "{{ task_user }}"
     group: "{{ task_user }}"
-  when: tw_self_sign|default(False)
   sudo: yes
   tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
 
 - name: Generate Self Signed CA
   shell: "/etc/pki/taskd/generate chdir=/etc/pki/taskd creates=/etc/pki/taskd/client.cert.pem"
-  when: tw_self_sign|default(False)
+  when: task_self_sign|default(False)
   sudo: yes
   sudo_user: "{{ task_user }}"
   tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
@@ -115,4 +114,4 @@
   with_items: "{{ task_users }}"
   sudo: yes
   sudo_user: "{{ task_user }}"
-  tags: [ 'tw', 'tw-user' ]
+  tags: [ 'tw', 'tw-user', 'tw-ca' ]

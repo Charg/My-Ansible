@@ -13,10 +13,9 @@
 
     - name: tests - check port is listening
       command: netstat -antpd | grep -i taskd
-      register:  netstat_out
+      register: netstat_out
       ignore_errors: yes
       sudo: yes
 
     - name: tests - assert taskd is listening
-      assert:
-        that: "{{ netstat_out | success }}"
+      assert: { that: "netstat_out|success" }

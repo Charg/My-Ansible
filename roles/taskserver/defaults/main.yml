@@ -12,7 +12,7 @@ task_users:
     org: "Default"
 ca_bin: '/usr/bin/certtool'
 ca_org: 'Not The FBI'
-ca_cn: '{{ ansible_hostname }}'
+ca_cn: '{{ ansible_fqdn }}'
 ca_country: 'US'
 ca_state: 'CA'
 ca_exp: '365'
