@@ -6,6 +6,8 @@
     state: enabled
   with_items: "{{ firewall_services|default(false) }}"
   when: firewall_services|default(false)
+  notify:
+    - restart firewalld
   sudo: yes
   tags: [ 'firewalld', 'firewalld-service' ]
 
@@ -16,5 +18,7 @@
     state: enabled
   with_items: "{{ firewall_ports|default(false) }}"
   when: firewall_ports|default(false)
+  notify:
+    - restart firewalld
   sudo: yes
   tags: [ 'firewalld', 'firewalld-ports' ]
