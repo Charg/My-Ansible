@@ -6,6 +6,8 @@
     state: enabled
   with_items: "{{ firewall_services|default(false) }}"
   when: firewall_services|default(false)
+  register: firewall_service
+  failed_when: '"connect" not in firewall_port.msg'
   notify:
     - restart firewalld
   sudo: yes
@@ -18,6 +20,8 @@
     state: enabled
   with_items: "{{ firewall_ports|default(false) }}"
   when: firewall_ports|default(false)
+  register: firewall_port
+  failed_when: '"connect" not in firewall_port.msg'
   notify:
     - restart firewalld
   sudo: yes
