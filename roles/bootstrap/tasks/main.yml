@@ -100,7 +100,3 @@
   notify:
     - restart sshd
   tags: [ 'bootstrap', 'bootstrap-config', 'bootstrap-config-sshd' ]
-
-##
-## Firewall Stuff Here
-##
