@@ -28,7 +28,7 @@ if [ ! -d "${T_DATA}" ]; then
 fi
 
 # Verify U_NAME exists
-U_INFO=`grep -rwl "${U_NAME}"`
+U_INFO=`grep -rwl "${U_NAME}" ${T_DATA}/orgs/`
 rc=$?
 
 if [ $rc != 0 ]; then
@@ -68,24 +68,12 @@ else
 	C_CERT=`cat ${T_PKI}/${U_NAME_B}.cert.pem`
 fi
 
-
-
 # Strip UID, Group, Server, Client Key, Client Cert, CA Cert,
-T_UID=`echo ${U_INFO/\/\///} | awk -F"/" '{print $5}'`
-T_ORG=`echo ${U_INFO/\/\///} | awk -F"/" '{print $3}'`
+T_UID=`echo ${U_INFO/\/\///} | awk -F"/" '{print $8}'`
+T_ORG=`echo ${U_INFO/\/\///} | awk -F"/" '{print $6}'`
 T_SERVER=`taskd config --data ${T_DATA} | grep server\ | awk '{print $2}'`
-#C_KEY=`cat ${T_DATA}/user_certs/${U_NAME/ /_}.key.pem | sed -ne '/BEGIN RSA/,/END RSA/p'`
-#C_CERT=`cat ${T_DATA}/user_certs/${U_NAME/ /_}.cert.pem`
-#CA_CERT=`cat ${CA_CERT}`
 
-#echo $T_UID
-#echo $T_ORG
-#echo $T_SERVER
-#echo $C_KEY
-#echo $C_CERT
-#echo $CA_CERT
-
-cat > ./${U_NAME_B} << EOF
+cat > ./${U_NAME_B}.secret << EOF
 username: ${U_NAME}
 org: ${T_ORG}
 user key: ${T_UID}
