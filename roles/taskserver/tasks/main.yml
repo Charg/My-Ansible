@@ -64,7 +64,6 @@
 
 - name: Generate Self Signed CA
   shell: "/etc/pki/taskd/generate chdir=/etc/pki/taskd creates=/etc/pki/taskd/client.cert.pem"
-  when: task_self_sign|default(False)
   sudo: yes
   sudo_user: "{{ task_user }}"
   tags: [ 'tw', 'tw-data', 'tw-prep', 'tw-ca' ]
@@ -115,3 +114,29 @@
   sudo: yes
   sudo_user: "{{ task_user }}"
   tags: [ 'tw', 'tw-user', 'tw-ca' ]
+
+- name: Copy User_Script.sh Over
+  copy:
+    src: user_script.sh
+    dest: ~/
+    mode: 0700
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-user', 'tw-script' ]
+
+- name: Run User_Sript.sh
+  shell: ~/user_script.sh "{{ item.name }}" creates=~/{{ item.name|regex_replace(' ', '_') }}
+  with_items: "{{ task_users }}"
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-user', 'tw-script' ]
+
+- name: Fetch User Info And Store In ~/.task
+  fetch: 
+    src: ~/{{ item.name|regex_replace(' ', '_') }}
+    dest: ~/.task/
+    flat: yes
+  with_items: "{{ task_users }}"
+  sudo: yes
+  sudo_user: "{{ task_user }}"
+  tags: [ 'tw', 'tw-user', 'tw-script' ]
