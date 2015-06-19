@@ -12,6 +12,7 @@ packages:
   - tmux
   - nmap
   - task
+  - gpg
 
 # GUI Packages. Packages I like to have on machines that have a GUI
 gui_packages:
